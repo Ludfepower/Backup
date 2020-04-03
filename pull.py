@@ -9,7 +9,7 @@ DEGUB	= 0
 
 ITERATIONS = 7
 BACKUP_FOLDER = "/home/ubuntu/backups/maskiner/" # where to put backup
-CONFIG = "backup_policy.conf"
+CONFIG = "/home/ubuntu/script/backup_policy.conf"
 
 SCP_USER = "ubuntu@"
 

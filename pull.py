@@ -8,10 +8,10 @@ VERBOSE = 0
 DEGUB	= 0
 
 ITERATIONS = 7
-BACKUP_FOLDER = "backups/"
+BACKUP_FOLDER = "/home/ubuntu/backups/maskiner/" # where to put backup
 CONFIG = "backup_policy.conf"
 
-SCP_USER = "root@"
+SCP_USER = "ubuntu@"
 
 #################################
 
@@ -51,23 +51,23 @@ debug("Debug is enabled")
 verbose("Opening config file: " + CONFIG); 	# Skriver ut fil navnet
 with open(CONFIG) as config:				# Open file + give it a file pointer with = "if this works"
 	for line in config:						# Reads line by line
-		verbose("Readline: " + line)		# Prints line read
+		verbose(f"Readline: {line}")		# Prints line read
 		configlist = line.split(":")		# Gets the host name, splits stops at ":".
 		pathlist = configlist[1].split(",")	# Gets "the other" part split above.
-		verbose("Host: " + configlist[0])	# Prints host name
-		host = configlist[0]				# Gets host name.
+		verbose(f"Host:{configlist[0]}")	# Prints host name
+		host = configlist[0]			# Gets host name.
 
 
 
 		# Step 0: Check if there is a backup folder, if not make it.
 		host_backup_path = BACKUP_FOLDER + host 							# Gets name for the folder
-		if not os.path.exists(host_backup_path + "." + str(ITERATIONS)): 	# checks if folder exists
-			verbose(f"Creating backup folder" + {host_backup_path})			# Prints info
+		if not os.path.exists(f"{host_backup_path}"): 	# checks if folder exists
+			verbose(f"Creating backup folder {host_backup_path}")			# Prints info
 			os.makedirs(host_backup_path)									# Makes folder if not exists
 
 
 		# Step 1: Remove the oldest folder
-		if os.path.isdir(host_backup_path + "." + str(ITERATIONS)):			# Checks if folder exists
+		if os.path.isdir(f"{host_backup_path}.{ITERATIONS}"):			# Checks if folder exists
 			verbose("Deleting oldest version of backup directory")
 			shutil.rmtree(f"{host_backup_path}.{ITERATIONS}")			# rm -r
 
@@ -77,7 +77,7 @@ with open(CONFIG) as config:				# Open file + give it a file pointer with = "if 
 		for i in range(ITERATIONS -1,0,-1):								# range(start, stop, step)
 			if os.path.isdir(f"{host_backup_path}.{i}"):
 				verbose(f"Moving {host_backup_path} from {i} to {i+1}")
-				shutil.move(f"{host_backup_path}.{i}",f"{host_backup_path}.{i+1}")
+				shutil.move(f"{host_backup_path}.{i}", f"{host_backup_path}.{i+1}")
 
 
 		# Step 3: cp -al current folder
@@ -93,10 +93,6 @@ with open(CONFIG) as config:				# Open file + give it a file pointer with = "if 
 			verbose(f"-> {folder}")
 			if not os.path.isdir(host_backup_path + folder):
 				os.makedirs(host_backup_path + folder)
-
-			verbose_rsync = ""
-			if VERBOSE:
-				verbose_rsync = "V"
 
 
 
